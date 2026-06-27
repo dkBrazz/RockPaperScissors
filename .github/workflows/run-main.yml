@@ -1,0 +1,49 @@
+name: Run Main
+
+on:
+  workflow_run:
+    workflows: [ "Tests" ]
+    types:
+      - completed
+
+jobs:
+  run-main:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run Main class
+        run: |
+          set -o pipefail
+          ./gradlew run --no-daemon --console=plain -q | tee main-output.txt
+
+      - name: Publish Main output to job summary
+        if: always()
+        run: |
+          {
+            echo "## Main output"
+            echo ""
+            echo '```'
+            cat main-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Main output
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: main-output
+          path: main-output.txt
+          retention-days: 7

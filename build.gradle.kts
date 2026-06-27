@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    application
 }
 
 group = "org.dkbrazz"
@@ -25,6 +26,10 @@ dependencies {
     testImplementation("org.mockito:mockito-junit-jupiter:5.22.0")
     mockitoAgent("org.mockito:mockito-core:5.22.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+application {
+    mainClass.set("org.dkbrazz.Main")
 }
 
 tasks.test {
