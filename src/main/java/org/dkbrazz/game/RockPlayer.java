@@ -8,6 +8,6 @@ import org.dkbrazz.matcher.HandSign;
 public class RockPlayer implements Player {
     @Override
     public HandSign shoot() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return HandSign.ROCK;
     }
 }
